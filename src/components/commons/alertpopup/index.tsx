@@ -1,23 +1,15 @@
-import { keyframes } from "@emotion/react";
 import styled from "@emotion/styled";
 import { useEffect, useState } from "react";
 
-const flow = keyframes`
-    0% {left:0%; opacity: 0;}
-    10% {opacity: 1;}
-    50% {opacity: 0;}
-    100% {left:90%; opacity: 0;}
-`;
 export const Body = styled.div`
-  position: fixed;
-  overflow: hidden;
+  position: absolute;
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  height: 100vh;
   padding: 0px 10%;
   z-index: 100;
-  background-color: rgba(0, 0, 0, 0.4);
+  background-color: rgba(0, 0, 0, 0.6);
   @media (max-width: 689px) {
     display: none;
   }
@@ -32,15 +24,17 @@ export const Wrapper = styled.div`
   left: 50%;
   transform: translate(-50%, -50%);
 `;
-export const Content = styled.img`
+export const Icon = styled.img`
+  margin-bottom: 30px;
+`;
+export const Content = styled.div`
   width: 100%;
   height: 90%;
-`;
-export const Point = styled.img`
-  position: absolute;
-  top: 250px;
-  left: 20px;
-  animation: ${flow} linear 3s infinite;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: 20px;
 `;
 export const ChooseClose = styled.div`
   display: flex;
@@ -60,17 +54,17 @@ export const Close = styled.div`
   cursor: pointer;
 `;
 
-export default function PopUp() {
+export default function AlertPopUp() {
   const [showModal, setShowModal] = useState(false);
   useEffect(() => {
-    const BEFORE = localStorage.getItem("visitBefore") || "";
+    const BEFORE = localStorage.getItem("mainVisitBefore") || "";
     const NOW = Math.floor(new Date().getDate());
     if (BEFORE === "") {
       setShowModal(true);
     } else {
       if (NOW >= Number(BEFORE)) {
         setShowModal(true);
-        localStorage.removeItem("visitBefore");
+        localStorage.removeItem("mainVisitBefore");
       } else {
         setShowModal(false);
       }
@@ -82,7 +76,7 @@ export default function PopUp() {
   const onClickTodayClose = () => {
     const expiry = new Date();
     const expiryDate: number = expiry.getDate() + 1;
-    localStorage.setItem("visitBefore", String(expiryDate));
+    localStorage.setItem("mainVisitBefore", String(expiryDate));
     setShowModal(false);
   };
   return (
@@ -90,8 +84,10 @@ export default function PopUp() {
       {showModal && (
         <Body>
           <Wrapper>
-            <Content src="/popup/popup.png" />
-            <Point src="/popup/point.png" />
+            <Content>
+              <Icon src="/popup/alert.png" />
+              포트폴리오용으로 제작된 페이지 입니다.
+            </Content>
             <ChooseClose>
               <OneDay onClick={onClickTodayClose}>하루동안 열지 않기</OneDay>
               <Close onClick={onClickClose}>닫기</Close>
